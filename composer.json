@@ -1,0 +1,19 @@
+{
+    "name": "hexlet/code",
+    "description": "Hexlet Lvl3 educational project",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Николай Рябинин",
+            "email": "rnn2002@mail.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
