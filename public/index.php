@@ -1,12 +1,13 @@
 <?php
 
-// namespace Hexlet\Code;
-
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
 use DI\Container;
 use Slim\Middleware\MethodOverrideMiddleware;
+use Slim\Flash;
+use Carbon\Carbon;
+use Valitron\Validator;
 
 $container = new Container();
 $container->set('renderer', function () {
