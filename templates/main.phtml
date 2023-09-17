@@ -32,19 +32,25 @@
       <div class="row">
         <div class="col">
           <h1 class="display-3">Анализатор страниц</h1>
+          <?php var_dump($url) ?>
+          <br>
+          <?php var_dump($errors) ?>
           <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
         </div>
       </div>
       <div class="row">
-        <form action="/urls" method="post" class="mb-3" required>
+        <form action="/urls" method="post" class="mb-3" required="">
           <div class="col">
-            <input type="text" name="url[name]" value="<?= htmlspecialchars($url['name'] ?? ''); ?>" class="form-control form-control-lg mb-3 <?php if (isset($errors)) : ?> is-invalid"<?php endif ?> placeholder="https://www.example.com">
+            <input type="text" name="url[name]" value="<?= htmlspecialchars($url['name'] ?? '') ?>"
+              class="form-control form-control-lg mb-3 <?= $isInvalid ?? '' ?>" placeholder="https://www.example.com">
               <?php if (isset($errors['name'])) : ?>
-		            <div class="invalid-feedback d-block">
-                  <?= $errors['name'] ?>
+		            <div class="invalid-feedback mb-3">
+                  <?= $errors['name'][0] ?>
                 </div>
               <?php endif ?>
-            <input type="submit" class="btn btn-primary btn-lg text-uppercase" value="Проверить">
+            <div>
+              <input type="submit" class="btn btn-primary btn-lg text-uppercase" value="Проверить">
+            </div>
           </div>
         </form>
       </div>
