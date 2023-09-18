@@ -95,4 +95,30 @@ $app->post('/urls', function ($request, $response) use ($router) {
     }
 });
 
+$app->get('/urls/{id}', function ($request, $response, $args) {
+    $flash = $this->get('flash')->getMessages();
+    $alert = key($flash);
+    if ($alert === 'error') {
+        $alert = 'warning';
+    }
+
+    $pdo = $this->get('pdo');
+    $query = "SELECT * FROM urls WHERE id = {$args['id']}";
+    $currentPage = $pdo->query($query)->fetch();
+
+    if ($currentPage) {
+        $query = "SELECT * FROM url_checks WHERE url_id = {$args['id']} ORDER BY created_at DESC";
+        $checks = $pdo->query($query)->fetchAll();
+        $params = [
+            'flash' => $flash,
+            'alert' => $alert,
+            'page' => $currentPage,
+            'checks' => $checks,
+        ];
+
+        return $this->get('renderer')->render($response, 'show.phtml', $params);
+    }
+    return $response->getBody()->write("Произошла ошибка при проверке, не удалось подключиться")->withStatus(404);
+})->setName('show');
+
 $app->run();
