@@ -27,34 +27,37 @@
     </nav>
   </header>
 
-  <div class="alert alert-success" role="alert">
-    Страница успешно добавлена
-    Страница уже существует
-  </div>
+  <?php if (count($flash) > 0) : ?>
+      <?php foreach ($flash as $messages) : ?>
+          <?php foreach ($messages as $message) : ?>
+            <div class="alert alert-<?= $alert ?>" role="alert"><?= $message ?></div>
+          <?php endforeach ?>
+      <?php endforeach ?>
+  <?php endif ?>
 
   <main class="wrapper flex-grow-1">
   <div class="container-lg mt-3">
-    <h1>Сайт: </h1>
+    <h1>Сайт: <?= $page['name'] ?></h1>
     <div class="table-responsive">
       <table class="table table-bordered table-hover text-nowrap" data-test="url">
         <tbody>
           <tr>
             <td>ID</td>
-            <td></td>
+            <td><?= $page['id'] ?></td>
           </tr>
           <tr>
             <td>Имя</td>
-            <td></td>
+            <td><?= $page['name'] ?></td>
           </tr>
           <tr>
             <td>Дата создания</td>
-            <td></td>
+            <td><?= $page['created_at'] ?></td>
           </tr>
         </tbody>
       </table>
     </div>
     <h2 class="mt-5 mb-3">Проверки</h2>
-    <form method="post" action="/urls/1/checks">
+    <form method="post" action="/urls/<?= $page['id'] ?>/checks">
       <input type="submit" class="btn btn-primary" value="Запустить проверку">
     </form>
     <table class="table table-bordered table-hover" data-test="checks">
@@ -67,7 +70,16 @@
           <th>description</th>
           <th>Дата создания</th>
         </tr>
-
+        <?php foreach ($checks as $check) : ?>
+          <tr>
+            <td><?= $check['id'] ?? '' ?></td>
+            <td><?= $check['status_code'] ?? '' ?></td>
+            <td><?= $check['h1'] ?? '' ?></td>
+            <td><?= $check['title'] ?? '' ?></td>
+            <td><?= $check['description'] ?? '' ?></td>
+            <td><?= $check['created_at'] ?? '' ?></td>
+          </tr>
+        <?php endforeach ?>
       </tbody>
     </table>
   </div>
