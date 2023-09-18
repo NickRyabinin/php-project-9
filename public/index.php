@@ -121,4 +121,9 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
     return $response->getBody()->write("Произошла ошибка при проверке, не удалось подключиться")->withStatus(404);
 })->setName('show');
 
+$app->get('/urls', function ($request, $response) {
+
+    return $this->get('renderer')->render($response, 'list.phtml');
+})->setName('list');
+
 $app->run();
