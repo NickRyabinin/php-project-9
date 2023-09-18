@@ -36,8 +36,8 @@
         </div>
       </div>
       <form action="/urls" method="post" class="row mb-3" required="">
-        <input type="text" name="url[name]" value="<?= htmlspecialchars($url['name'] ?? '') ?>" class="form-control form-control-lg mb-3 <?= $isInvalid ?>" placeholder="https://www.example.com">
-        <?php if (isset($errors['name'])) : ?>
+        <input type="text" name="url[name]" value="<?= htmlspecialchars($url['name'] ?? '') ?>" class="form-control form-control-lg mb-3 <?= $isInvalid ?? '' ?>" placeholder="https://www.example.com">
+        <?php if (!empty($errors['name'])) : ?>
 		      <div class="invalid-feedback mb-3"><?= $errors['name'][0] ?></div>
         <?php endif ?>
         <input type="submit" class="btn btn-primary btn-lg text-uppercase" value="Проверить">
