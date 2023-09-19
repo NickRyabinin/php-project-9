@@ -39,12 +39,14 @@
               <th>Последняя проверка</th>
               <th>Код ответа</th>
             </tr>
-            <tr>
-              <td>1</td>
-              <td><a href="/urls/1"></a></td>
-              <td></td>
-              <td></td>
-            </tr>
+              <?php foreach ($urls as $urlId => $url) : ?>
+                <tr>
+                  <td><?= $urlId ?></td>
+                  <td><a href="/urls/<?= $urlId ?>"><?= $url['name'] ?></a></td>
+                  <td><?= $url['created_at'] ?? '' ?></td>
+                  <td><?= $url['status_code']  ?? '' ?></td>
+                </tr>
+              <?php endforeach ?>
           </tbody>
         </table>
       </div>
