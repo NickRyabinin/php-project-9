@@ -9,19 +9,24 @@ use Slim\Flash;
 use Carbon\Carbon;
 use Valitron\Validator;
 use Hexlet\Code\Database;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\TransferException;
 
 session_start();
 
 $container = new Container();
 $container->set('renderer', function () {
-        return new \Slim\Views\PhpRenderer(__DIR__ . '/../templates');
+    return new \Slim\Views\PhpRenderer(__DIR__ . '/../templates');
 });
 $container->set('flash', function () {
-        return new \Slim\Flash\Messages();
+    return new \Slim\Flash\Messages();
 });
 $container->set('pdo', function () {
-        $pdo = Database::get()->connect();
-        return $pdo;
+    $pdo = Database::get()->connect();
+    return $pdo;
+});
+$container->set('client', function () {
+    return new Client();
 });
 
 $app = AppFactory::createFromContainer($container);
@@ -95,7 +100,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
     }
 });
 
-$app->get('/urls/{id}', function ($request, $response, $args) {
+$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     $flash = $this->get('flash')->getMessages();
     $alert = key($flash);
     if ($alert === 'error') {
@@ -121,9 +126,46 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
     return $response->getBody()->write("Произошла ошибка при проверке, не удалось подключиться")->withStatus(404);
 })->setName('show');
 
-$app->get('/urls', function ($request, $response) {
+$app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router) {
+    $urlId = $args['url_id'];
 
-    return $this->get('renderer')->render($response, 'list.phtml');
+    try {
+        $pdo = $this->get('pdo');
+        $query = "SELECT name FROM urls WHERE id = {$urlId}";
+        $urlToCheck = $pdo->query($query)->fetchColumn();
+
+        $createdAt = Carbon::now();
+
+        $client = $this->get('client');
+        try {
+            $res = $client->get($urlToCheck);
+            $statusCode = $res->getStatusCode();
+            $this->get('flash')->addMessage('success', 'Страница успешно проверена');
+        } catch (TransferException $e) {
+            $this->get('flash')->addMessage('warning', 'Произошла ошибка при проверке');
+            return $response->withRedirect($router->urlFor('show', ['id' => $urlId]));
+        }
+
+        $query = "INSERT INTO url_checks (
+            url_id,
+            created_at,
+            status_code)
+            VALUES (?, ?, ?)";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$urlId, $createdAt, $statusCode]);
+    } catch (\PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return $response->withRedirect($router->urlFor('show', ['id' => $urlId]));
+});
+
+$app->get('/urls', function ($request, $response) {
+    $pdo = $this->get('pdo');
+    $query = 'SELECT id, name FROM urls ORDER BY created_at DESC';
+    $urlsToShow = $pdo->query($query)->fetchAll(\PDO::FETCH_UNIQUE);
+
+    return $this->get('renderer')->render($response, 'list.phtml', ['urls' => $urlsToShow]);
 })->setName('list');
 
 $app->run();
