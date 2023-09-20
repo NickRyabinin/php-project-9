@@ -12,7 +12,7 @@ final class Database
 
     public function connect()
     {
-        $databaseUrl = parse_url(getenv('DATABASE_URL'));
+        $databaseUrl = parse_url((string) getenv('DATABASE_URL'));
         $username = $databaseUrl['user'];
         $password = $databaseUrl['pass'];
         $host = $databaseUrl['host'];
