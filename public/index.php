@@ -11,6 +11,8 @@ use Valitron\Validator;
 use Hexlet\Code\Database;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\TransferException;
+use DiDom\Document;
+use Illuminate\Support;
 
 session_start();
 
@@ -126,7 +128,7 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     return $response->getBody()->write("Произошла ошибка при проверке, не удалось подключиться")->withStatus(404);
 })->setName('show');
 
-$app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router) {
+$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router) {
     $urlId = $args['url_id'];
 
     try {
@@ -146,13 +148,22 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($
             return $response->withRedirect($router->urlFor('show', ['id' => $urlId]));
         }
 
+        $documentBody = (string) $res->getBody();
+        $document = new Document($documentBody);
+        $h1 = optional($document->first('h1'))->text();
+        $title = optional($document->first('title'))->text();
+        $description = optional($document->first('meta[name=description]'))->content;
+
         $query = "INSERT INTO url_checks (
             url_id,
             created_at,
-            status_code)
-            VALUES (?, ?, ?)";
+            status_code,
+            h1,
+            title,
+            description)
+            VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($query);
-        $stmt->execute([$urlId, $createdAt, $statusCode]);
+        $stmt->execute([$urlId, $createdAt, $statusCode, $h1, $title, $description]);
     } catch (\PDOException $e) {
         echo $e->getMessage();
     }
