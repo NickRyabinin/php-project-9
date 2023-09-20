@@ -9,7 +9,7 @@ final class Database
     protected function __construct()
     {
     }
-    
+
     public function connect()
     {
         $databaseUrl = parse_url(getenv('DATABASE_URL'));
