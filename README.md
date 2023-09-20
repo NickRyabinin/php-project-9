@@ -15,3 +15,11 @@ git clone git@github.com:NickRyabinin/php-project-9.git
 
 make install
 ```
+### Локальный запуск:
+```bash
+make start-local
+```
+### Запуск в продакшене:
+```bash
+make start
+```
