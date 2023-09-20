@@ -148,11 +148,10 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
             return $response->withRedirect($router->urlFor('show', ['id' => $urlId]));
         }
 
-        $documentBody = (string) $res->getBody();
-        $document = new Document($documentBody);
+        $document = new Document((string) $res->getBody());
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();
-        $description = optional($document->first('meta[name=description]'))->content;
+        $description = optional($document->first('meta[name=description]'))->getAttribute('content');
 
         $query = "INSERT INTO url_checks (
             url_id,
@@ -173,10 +172,14 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
 
 $app->get('/urls', function ($request, $response) {
     $pdo = $this->get('pdo');
-    $query = 'SELECT id, name FROM urls ORDER BY created_at DESC';
-    $urlsToShow = $pdo->query($query)->fetchAll(\PDO::FETCH_UNIQUE);
+    $query = 'SELECT urls.id, urls.name, url_checks.status_code, MAX (url_checks.created_at) AS created_at 
+        FROM urls 
+        LEFT OUTER JOIN url_checks ON url_checks.url_id = urls.id 
+        GROUP BY url_checks.url_id, urls.id, url_checks.status_code 
+        ORDER BY urls.id DESC';
+    $dataToShow = $pdo->query($query)->fetchAll();
 
-    return $this->get('renderer')->render($response, 'list.phtml', ['urls' => $urlsToShow]);
+    return $this->get('renderer')->render($response, 'list.phtml', ['data' => $dataToShow]);
 })->setName('list');
 
 $app->run();
