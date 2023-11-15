@@ -28,7 +28,7 @@
   </header>
 
   <main class="wrapper flex-grow-1">
-    <div class="container border mt-3 text-center">
+    <div class="container border mt-3 px-3 text-center">
       <div class="row">
         <div class="col">
           <h1 class="display-3">Анализатор страниц</h1>
@@ -40,16 +40,17 @@
         <?php if (!empty($errors['name'])) : ?>
 		      <div class="invalid-feedback mb-3"><?= $errors['name'][0] ?></div>
         <?php endif ?>
-        <input type="submit" class="btn btn-primary btn-lg text-uppercase" value="Проверить">
+        <input type="submit" class="btn btn-primary btn-lg text-uppercase col-6 mx-auto" value="Проверить">
       </form>
     </div>
   </main>
 
-  <footer class="border-top py-3 mt-3 flex-shrink-0">
-    <div class="container-lg">
-      <div class="text-center">
-        <a href="https://hexlet.io/pages/about" target="_blank">Hexlet</a>
+  <footer class="border-top pt-3 flex-shrink-0">
+    <div class="container-lg text-center">
+      <div>
+        <a href="https://github.com/NickRyabinin" target="_blank">Николай Рябинин &#169;</a>
       </div>
+      <p>2023</p>
     </div>
   </footer>
 </body>
