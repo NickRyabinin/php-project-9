@@ -15,6 +15,12 @@ git clone git@github.com:NickRyabinin/php-project-9.git
 
 make install
 ```
+
+В проекте используется БД PostgreSQL. Данные для подключения берутся из переменной окружения DATABASE_URL вида
+```bash
+DATABASE_URL=postgresql://user:pass@host:port/database
+```
+
 ### Локальный запуск:
 ```bash
 make start-local
