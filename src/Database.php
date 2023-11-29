@@ -25,6 +25,11 @@ final class Database
           ];
         try {
             $pdo = new \PDO($dsn, $username, $password, $options);
+            $migration = file_get_contents(__DIR__ . "/../database.sql");
+            $statements = explode("\r\n\r\n", $migration);
+            foreach ($statements as $statement) {
+                $pdo->exec($statement);
+            }
         } catch (\PDOException $e) {
             echo $e->getMessage();
             die();
