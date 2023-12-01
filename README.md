@@ -4,6 +4,11 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e4b821946dcaaf03a104/maintainability)](https://codeclimate.com/github/NickRyabinin/php-project-9/maintainability)
 ### Page Analyzer – сайт, который анализирует указанные страницы на SEO пригодность.
 
+Применяемый стек: PHP/Slim. Стилизация - Bootstrap. Используемая БД - PostgreSQL. Данные для подключения берутся из переменной окружения DATABASE_URL вида
+```bash
+DATABASE_URL=postgresql://user:pass@host:port/database
+```
+
 ### Требования:
 php >= 8
 
@@ -15,12 +20,6 @@ git clone git@github.com:NickRyabinin/php-project-9.git
 
 make install
 ```
-
-В проекте используется БД PostgreSQL. Данные для подключения берутся из переменной окружения DATABASE_URL вида
-```bash
-DATABASE_URL=postgresql://user:pass@host:port/database
-```
-
 ### Локальный запуск:
 ```bash
 make start-local
