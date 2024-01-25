@@ -17,5 +17,5 @@ COPY . .
 # Устанавливаем зависимости проекта через Composer
 RUN composer install
 
-# Запускаем PHP CLI сервер на порту $PORT
-CMD ["php", "-S", "0.0.0.0:$PORT", "-t", "public", "-d", "PHP_CLI_SERVER_WORKERS=5"]
+# Запускаем PHP CLI сервер на порту 10000
+CMD ["php", "-S", "0.0.0.0:10000", "-t", "public", "-d", "PHP_CLI_SERVER_WORKERS=5"]
