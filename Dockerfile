@@ -1,17 +1,21 @@
-# Используем официальный образ PHP 8.1 с включенным сервером CLI
 FROM php:8.2-cli
 
-# Устанавливаем рабочую директорию
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    libzip-dev
+RUN docker-php-ext-install pdo pdo_pgsql zip
+
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && php -r "unlink('composer-setup.php');"
+
 WORKDIR /app
 
-# Копируем файлы проекта в контейнер
-COPY . /app
-
-# Устанавливаем Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY . .
 
 # Устанавливаем зависимости проекта через Composer
 RUN composer install
 
-# Запускаем PHP CLI сервер на порту 8000
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public", "-d", "PHP_CLI_SERVER_WORKERS=5"]
+# Запускаем PHP CLI сервер на порту $PORT
+CMD ["php", "-S", "0.0.0.0:$PORT", "-t", "public", "-d", "PHP_CLI_SERVER_WORKERS=5"]
