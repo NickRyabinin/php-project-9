@@ -6,7 +6,7 @@
 
 Применяемый стек: PHP/Slim. Стилизация - Bootstrap. Используемая БД - PostgreSQL. Данные для подключения берутся из переменной окружения DATABASE_URL вида
 ```bash
-DATABASE_URL=postgresql://user:pass@host:port/database
+DATABASE_URL=postgres://user:pass@host:port/database
 ```
 
 ### Требования:
@@ -28,4 +28,4 @@ make start-local
 ```bash
 make start
 ```
-Посмотреть проект можно [по этой ссылке](https://php-project-9-production-3e09.up.railway.app/).
+Посмотреть проект можно [по этой ссылке](https://page-seo-check.onrender.com/).
