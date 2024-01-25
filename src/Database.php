@@ -2,21 +2,27 @@
 
 namespace Hexlet\Code;
 
+use PDO;
+
 final class Database
 {
     private static ?Database $connection = null;
 
-    protected function __construct()
+    private function __construct()
     {
     }
 
-    public function connect()
+    private function __clone()
+    {
+    }
+
+    public function connect(): PDO
     {
         $databaseUrl = parse_url((string) getenv('DATABASE_URL'));
-        $username = $databaseUrl['user'];
-        $password = $databaseUrl['pass'];
-        $host = $databaseUrl['host'];
-        $port = $databaseUrl['port'];
+        $username = $databaseUrl['user'] ?? '';
+        $password = $databaseUrl['pass'] ?? '';
+        $host = $databaseUrl['host'] ?? '';
+        $port = $databaseUrl['port'] ?? '';
         $dbName = ltrim($databaseUrl['path'], '/');
         $dsn = "pgsql:host={$host};port={$port};dbname={$dbName}";
         $options = [
@@ -31,16 +37,15 @@ final class Database
                 $pdo->exec($statement);
             }
         } catch (\PDOException $e) {
-            echo $e->getMessage();
-            die();
+            die("Database connection failed: " . $e->getMessage());
         }
         return $pdo;
     }
 
-    public static function get()
+    public static function get(): Database
     {
         if (static::$connection === null) {
-            static::$connection = new self();
+            static::$connection = new static();
         }
 
         return static::$connection;
